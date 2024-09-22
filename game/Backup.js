@@ -119,21 +119,28 @@ function shoot(e) {
 
     function moveLaser() {
         squares[currentLaserIndex].classList.remove("laser"); // Remove laser class from the current position
-        currentLaserIndex -= width; // Move laser up
-        squares[currentLaserIndex].classList.add("laser"); // Add laser class to the new position
+        currentLaserIndex -= width; // Move laser up by one row
+        if (currentLaserIndex >= 0) { // Ensure the laser doesn't go out of bounds
+            squares[currentLaserIndex].classList.add("laser"); // Add laser class to the new position
+        }
 
+        // Check for collision with invader
         if (squares[currentLaserIndex].classList.contains("invader")) {
-            squares[currentLaserIndex].classList.remove("laser"); // Remove laser class
-            squares[currentLaserIndex].classList.remove("invader"); // Remove invader class
-            squares[currentLaserIndex].classList.add("boom"); // Add boom class
+            squares[currentLaserIndex].classList.remove("laser");
+            squares[currentLaserIndex].classList.remove("invader");
+            squares[currentLaserIndex].classList.add("boom");
 
-            setTimeout(() => squares[currentLaserIndex].classList.remove("boom"), 300); // Remove boom class after 300ms
+            setTimeout(() => squares[currentLaserIndex].classList.remove("boom"), 300); // Timed explosion effect
             cancelAnimationFrame(laserId); // Stop the laser animation
 
-            const alienRemoved = alienInvaders.indexOf(currentLaserIndex); // Get the index of the removed invader
-            aliensRemoved.push(alienRemoved); // Add the removed invader to the array
-            results++; // Increment the score
-            resultDisplay.innerHTML = results; // Update the score display
+            const alienRemoved = alienInvaders.indexOf(currentLaserIndex);
+            aliensRemoved.push(alienRemoved);
+            results++;
+            resultDisplay.innerHTML = results;
+        } else if (currentLaserIndex < 0) { // Stop the laser if it goes out of bounds
+            cancelAnimationFrame(laserId);
+        } else {
+            laserId = requestAnimationFrame(moveLaser); // Continue moving the laser
         }
     }
 
@@ -142,5 +149,5 @@ function shoot(e) {
     }
 }
 
-document.addEventListener('keydown', shoot); // Listen for keydown events to shoot lasers
+document.addEventListener('keydown', shoot);
 */
