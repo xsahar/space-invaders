@@ -1,15 +1,16 @@
 .grid {
-  width: 300px;
-  height: 300px;
-  border: transparent;
-  display: flex;
-  flex-wrap: wrap;
-  background-color: black;
+  display: grid;
+  grid-template-columns: repeat(20, 30px); /* Adjust the number of columns and size */
+  grid-template-rows: repeat(20, 30px); /* Adjust the number of rows and size */
+  gap: 2px; /* Optional: Add some space between grid items */
+  width: fit-content; /* Ensure the grid fits its content */
+  margin: 0 auto; /* Center the grid */
+  background-color: black; /* Background color for the grid */
 }
 
 .grid div {
-  width: 20px;
-  height: 20px;
+  width: 30px; /* Adjust the size of each grid item */
+  height: 30px; /* Adjust the size of each grid item */
 }
 
 .invader {
@@ -28,6 +29,4 @@
 
 .boom {
   background-color: red;
-  }
- 
-     
+}
