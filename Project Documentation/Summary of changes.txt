@@ -1,0 +1,39 @@
+Summary of Changes:
+
+Removed Unused Variables: results and speed.
+Removed Unnecessary Image Loading Block: Promise.all block.
+
+Added startGame Function:
+Initializes the game elements.
+Hides the start button and shows the game elements.
+Calls functions to create the grid, update lives display, start the countdown, draw the shooter, draw the invaders, and start invader shooting.
+
+Ensured Grid Creation:
+Verified that the createGrid function is called to create the grid before drawing the invaders.
+
+Added drawInvaders Function:
+Ensures invaders are drawn on the grid.
+
+Added removeInvaders Function:
+Ensures invaders are removed from the grid.
+
+added the style to the css.
+
+The changes made to switch from setInterval to requestAnimationFrame involve:
+
+Replacing setInterval with requestAnimationFrame:
+Functions that were previously called at regular intervals using setInterval are now called using requestAnimationFrame.
+
+Adding timestamp checks:
+Functions now include timestamp checks to determine if enough time has passed to perform the next action. This ensures that the actions are performed at the desired intervals.
+
+Updating the game loop logic:
+The game loop logic is updated to use requestAnimationFrame for smoother 
+animations and better performance.
+
+Handling pause state:
+
+The pause state is managed within the requestAnimationFrame loops to ensure that animations and game logic are paused correctly.
+
+Canceling and restarting animations:
+cancelAnimationFrame is used to stop animations when necessary, such as when the game is paused or over. Animations are restarted using requestAnimationFrame when the game resumes.

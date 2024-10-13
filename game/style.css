@@ -1,32 +1,178 @@
+/* Body styling */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif; /* Use Roboto font */
+  background-color: #1e1e1e; /* Dark grey background */
+  color: #f5f5f5; /* Light grey text color */
+  text-align: center;
+}
+
+.title{
+  font-size: 60px;
+  color: rgb(0, 255, 13);
+  font-family:'Times New Roman', Times, serif;
+  text-shadow: 1px 1px 2px black, 0 0 25px rgb(24, 184, 40);
+
+}
+
+.instructions{
+  font-size: 20px;
+  color: rgb(0, 255, 13);
+  font-family:'Times New Roman', Times, serif;
+  text-shadow: 1px 1px 2px black, 0 0 25px rgb(24, 184, 40);
+}
+
+/* Grid styling */
 .grid {
+  width: 400px;
+  height: 400px;
   display: grid;
-  grid-template-columns: repeat(20, 30px); /* Adjust the number of columns and size */
-  grid-template-rows: repeat(20, 30px); /* Adjust the number of rows and size */
-  gap: 2px; /* Optional: Add some space between grid items */
-  width: fit-content; /* Ensure the grid fits its content */
-  margin: 0 auto; /* Center the grid */
-  background-color: black; /* Background color for the grid */
+  grid-template-columns: repeat(20, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+  margin: 50px auto;
+  position: relative;
 }
 
 .grid div {
-  width: 30px; /* Adjust the size of each grid item */
-  height: 30px; /* Adjust the size of each grid item */
+  width: 20px;
+  height: 20px;
+  border: 1px solid #333; /* Darker border for grid cells */
 }
 
-.invader {
-  background-size: cover;
-  background-repeat: no-repeat;
+/* Lives display styling */
+.lives {
+  font-size: 20px;
+  color: rgb(0, 255, 13);
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 10px;
+  border-radius: 10px;
 }
 
-.shooter {
-  background-size: cover;
-  background-repeat: no-repeat;
+/* Results display styling */
+.results {
+  font-size: 20px;
+  /* margin-bottom: 10px; */
+  color: rgb(0, 255, 13); 
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 10px;
+  border-radius: 10px;
 }
 
+/* Countdown display styling */
+.countdown {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: red; /* Light red color for countdown */
+  position: absolute;
+  top: 100px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding:10px 10px;
+  border-radius: 10px;
+}
+
+/* Pause overlay styling */
+.pause-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  font-weight: bold;
+  color: #ffffff; /* White text color */
+  background-color: rgba(30, 30, 30, 0.9); /* Darker semi-transparent background */
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 10; /* Ensure it appears on top */
+  display: none; /* Initially hidden */
+  text-align: center;
+}
+
+/* Pause buttons styling */
+.pause-buttons {
+  margin-top: 20px;
+}
+
+.pause-buttons button {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #555; /* Dark grey background */
+  color: #f5f5f5; /* Light grey text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.pause-buttons button:hover {
+  background-color: #777; /* Lighter grey on hover */
+}
+
+/* Laser styling */
 .laser {
-  background-color: rgb(255, 255, 255);
+  background-color: #ff0000; /* Bright red color for laser */
 }
 
-.boom {
-  background-color: red;
+/* Invader laser styling */
+.invader-laser {
+  background-color: #ffff00; /* Bright yellow color for invader's laser */
 }
+
+
+/* Overlay that covers the entire screen */
+.overlay {
+  position: absolute; /* Position it absolutely relative to the nearest positioned ancestor */
+  top: 0; /* Align to the top of the screen */
+  left: 0; /* Align to the left of the screen */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background: rgba(30, 30, 30, 0.8); /* Darker semi-transparent background */
+  z-index: 10; /* Ensure it is on top of game elements */
+  display: flex; /* Use flexbox for centering content */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+}
+
+/* Class to hide elements */
+.hidden {
+  display: none; /* Hide the element */
+}
+
+/* Style for the start button */
+.centered {
+  position: absolute; /* Position it absolutely */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust position to be exactly centered */
+  background-color:rgb(25, 214, 34); /* Green background */
+  color: white; /* White text color */
+  font-size: 26px; /* Font size */
+  padding: 16px 30px; /* Padding inside the button */
+  border: none; /* No border */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 9px #0a610a; /* Darker shadow effect */
+  text-align: center; /* Center text */
+  z-index: 11; /* Ensure it is above the overlay */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Hover effect for the start button */
+.centered:hover {
+  background-color: rgb(18, 183, 27); /* Darker green on hover */
+}
+
+/* Ensure game elements are below the overlay */
+.grid, .results, .countdown, .pause-overlay, .game-over-overlay {
+  z-index: 1; /* Lower z-index to be below the overlay */
+}
+

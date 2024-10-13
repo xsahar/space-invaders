@@ -1,0 +1,36 @@
+pause the game (done)
+
+pause menu continue and restart buttons (done)
+
+make the image svg
+
+make the images square (done)
+
+make score system and display score (done)
+
+invader gets faster the more of them dies (done)
+
+invader shoots lazer randomly (done)
+
+implement lives mechanic for invader lazer (done)
+
+
+
+issues:
+
+lives do not deduct after getting hit (done)
+
+redundant lives counter that doesnt work (done)
+
+speed after getting hit is now gone (done)
+
+timer finsihs and no gameover (done)
+
+
+
+the laser shoots after gameover 
+
+shoot and pause freezes laser even after unpausing 
+
+laser gets dumped all at once after leaving browser and coming back
+

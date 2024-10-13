@@ -65,10 +65,3 @@ Performance optimization involves refining your code and resources to improve th
 
 3. **Optimizing Code**:
    - Refactor your code based on the performance analysis. For example, if you notice frequent paints, check your DOM manipulations and CSS properties.
-
-
-(1) Tips to improve PC performance in Windows - Microsoft Support. https://support.microsoft.com/en-us/windows/tips-to-improve-pc-performance-in-windows-b3b3ef5b-5953-fb6a-2528-4bbed82fba96.
-(2) 20 tips and tricks to increase PC performance on Windows 10. https://www.windowscentral.com/tips-tricks-increase-pc-performance-windows-10.
-(3) Performance Optimization - Dremio. https://www.dremio.com/wiki/performance-optimization/.
-(4) Introduction to Performance Optimization - CodingDrills. https://www.codingdrills.com/tutorial/system-design-tutorial/performance-optimization.
-(5) Performance Optimization in Software Development: Speeding Up ... - SENLA. https://senlainc.com/blog/performance-optimization-in-software-development/.

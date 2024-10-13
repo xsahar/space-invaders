@@ -3,11 +3,31 @@
 <head>
   <meta charset='utf-8'>
   <title>Space Invaders</title>
-  <link rel='stylesheet' href='style.css'>
+  <link rel="stylesheet" href="/game/style.css">
 </head>
 <body>
-  <h1 class="results">0</h1>
-  <div class="grid"></div>
+  <h1 class="title">Space Invaders</h1>
+  <!-- <h2 class="instructions">Shoot the aliens before they reach the bottom of the screen!</h2> -->
+  <h2 class="instructions">Use the arrow keys to move and shoot</h2>
+  <h2 class="instructions">Press Esc or P to pause the game</h2>
+  <h2 class="instructions">Press Enter or space to start the game</h2>
+  <button id="start-btn" class="centered">START</button>
+  <h1 class="results hidden">Score: 0</h1>
+  <h2 class="countdown hidden">Time Left: 45s</h2>
+  <div class="grid hidden"></div>
+  <div class="pause-overlay hidden">
+    PAUSED
+    <div class="pause-buttons">
+      <button id="continue-btn">Continue</button>
+      <button id="restart-btn">Restart</button>
+    </div>
+  </div>
+  <div id="game-over-overlay" class="pause-overlay" style="display: none;">
+    <div id="game-over-message"></div>
+    <div class="pause-buttons">
+      <button id="final-restart-btn">Restart</button>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
