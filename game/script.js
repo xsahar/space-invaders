@@ -65,9 +65,10 @@ overlay.appendChild(StartBtn);
 
 let lastCountdownTime = 0;
 
+// Countdown loop to update the countdown timer every second
 function countdownLoop(timestamp) {
-    if (!isPaused){
-        if (timestamp - lastCountdownTime >= 1000){
+    if (!isPaused) {
+        if (timestamp - lastCountdownTime >= 1000) {
             updateCountdown();
             lastCountdownTime = timestamp;
         }
@@ -81,6 +82,7 @@ let invaderShootInterval = 1000 + Math.random() * 2000;
 // Start the countdown loop
 countdownInterval = requestAnimationFrame(countdownLoop);
 
+// Invader shooting loop to control the invader's shooting interval
 function invaderShootLoop(timestamp) {
     if (!isPaused) {
         if (timestamp - lastInvaderShootTime >= invaderShootInterval) {
@@ -101,11 +103,11 @@ function startGame() {
     StartBtn.classList.add('hidden');
     overlay.classList.add('hidden');
 
-     // Hide the title and instructions
-     document.querySelector('.title').classList.add('hidden');
-     document.querySelectorAll('.instructions').forEach(function(element) {
-         element.classList.add('hidden');
-     });
+    // Hide the title and instructions
+    document.querySelector('.title').classList.add('hidden');
+    document.querySelectorAll('.instructions').forEach(function(element) {
+        element.classList.add('hidden');
+    });
     
     // Show the game elements
     resultDisplay.classList.remove('hidden');
@@ -125,14 +127,7 @@ function startGame() {
 }
 
 // Add event listener for the "keydown" event to start the game with the "Space" key
-document.addEventListener('keydown', (e) => {
-    if ((e.key === "Enter" || e.key === " ") && document.activeElement === StartBtn) {
-        e.preventDefault(); // Prevent the default action (scrolling or expanding the grid)
-        startGame();
-    }
-});
-
-
+StartBtn.addEventListener('click', startGame);
 
 // Show the overlay and start button initially
 overlay.classList.remove('hidden');
@@ -197,6 +192,7 @@ function updateCountdown() {
     }
 }
 
+// Ensure game assets are loaded before starting the game
 Promise.all([
     new Promise((resolve) => invaderImg.onload = resolve),
     new Promise((resolve) => shooterImg.onload = resolve)
@@ -204,6 +200,7 @@ Promise.all([
     // Game assets loaded
 });
 
+// Function to draw the shooter
 function drawShooter() {
     const squares = Array.from(document.querySelectorAll(".grid div"));
     squares[currentShooterIndex].style.backgroundImage = `url(${shooterImg.src})`;
@@ -212,6 +209,7 @@ function drawShooter() {
     squares[currentShooterIndex].classList.add("shooter");
 }
 
+// Function to remove the shooter
 function removeShooter() {
     const squares = Array.from(document.querySelectorAll(".grid div"));
     if (squares[currentShooterIndex]) {
@@ -220,6 +218,7 @@ function removeShooter() {
     }
 }
 
+// Function to move the shooter based on user input
 function moveShooter(e) {
     if (isPaused) return;
 
@@ -235,8 +234,10 @@ function moveShooter(e) {
     drawShooter();
 }
 
+// Add event listener for shooter movement
 document.addEventListener('keydown', moveShooter);
 
+// Function to move the invaders
 function moveInvaders(timestamp) {
     // If the game is paused, exit the function early
     if (isPaused) return;
@@ -302,96 +303,139 @@ function moveInvaders(timestamp) {
 // Start the animation loop
 animationFrameId = requestAnimationFrame(moveInvaders);
 
+// Function to handle player shooting
 function shoot() {
+    // If the player cannot shoot (due to cooldown), exit the function
     if (!canShoot) return;
 
+    // Get all the grid cells (div elements) and store them in an array
     const squares = Array.from(document.querySelectorAll(".grid div"));
-    let laserId;
-    let currentLaserIndex = currentShooterIndex;
+    let laserId; // Variable to store the ID returned by requestAnimationFrame
+    let currentLaserIndex = currentShooterIndex; // The index of the grid cell where the laser starts
 
+    // Set canShoot to false to prevent shooting again immediately
     canShoot = false;
+    // Reset canShoot to true after the cooldown period
     setTimeout(() => canShoot = true, normalShootCooldownTime);
 
+    // Function to move the laser
     function moveLaser() {
+        // If the game is paused, exit the function
         if (isPaused) return;
 
+        // Remove the "laser" class from the current cell
         squares[currentLaserIndex].classList.remove("laser");
+        // Move the laser up by one row
         currentLaserIndex -= width;
 
+        // If the laser is still within the grid
         if (currentLaserIndex >= 0) {
+            // Add the "laser" class to the new cell
             squares[currentLaserIndex].classList.add("laser");
 
+            // Check if the laser hits an invader
             if (squares[currentLaserIndex].style.backgroundImage.includes('invader.png')) {
+                // Get the index of the invader
                 let alienIndex = alienInvaders.indexOf(currentLaserIndex);
+                // Add the invader index to the list of removed invaders
                 aliensRemoved.push(alienIndex);
+                // Remove the invader image and the "laser" class from the cell
                 squares[currentLaserIndex].style.backgroundImage = '';
                 squares[currentLaserIndex].classList.remove("laser");
 
+                // Update the score
                 updateScore();
 
+                // Decrease the invader move interval to speed up the game
                 if (invaderMoveInterval > minMoveInterval) {
                     invaderMoveInterval -= 20;
                 }
 
+                // Cancel the animation frame for the laser
                 cancelAnimationFrame(laserId);
             } else {
+                // Schedule the next frame for the laser movement
                 laserId = requestAnimationFrame(moveLaser);
             }
         }
     }
 
+    // Start the laser movement animation
     laserId = requestAnimationFrame(moveLaser);
 }
 
 // Special shooting (Down arrow) with 3 shots and 5-second cooldown
 function specialShoot() {
+    // Check if special shooting is allowed
     if (!canSpecialShoot) return;
 
+    // Get all grid squares
     const squares = Array.from(document.querySelectorAll(".grid div"));
+    // Disable special shooting until cooldown period is over
     canSpecialShoot = false;
     setTimeout(() => canSpecialShoot = true, specialShootCooldownTime);
 
     let shots = 3; // Number of consecutive shots
 
+    // Function to fire a special shot
     function fireSpecialShot() {
+        // Stop firing if no shots are left
         if (shots === 0) return;
 
         let laserId;
         let currentLaserIndex = currentShooterIndex;
 
+        // Function to move the laser
         function moveLaser() {
+            // Pause the laser movement if the game is paused
             if (isPaused) return;
 
+            // Remove the laser from the current position
             squares[currentLaserIndex].classList.remove("laser");
+            // Move the laser up by one row
             currentLaserIndex -= width;
 
+            // Check if the laser is still within the grid
             if (currentLaserIndex >= 0) {
+                // Add the laser to the new position
                 squares[currentLaserIndex].classList.add("laser");
 
+                // Check if the laser hits an invader
                 if (squares[currentLaserIndex].style.backgroundImage.includes('invader.png')) {
+                    // Get the index of the hit invader
                     let alienIndex = alienInvaders.indexOf(currentLaserIndex);
+                    // Mark the invader as removed
                     aliensRemoved.push(alienIndex);
+                    // Clear the invader image and laser from the grid
                     squares[currentLaserIndex].style.backgroundImage = '';
                     squares[currentLaserIndex].classList.remove("laser");
 
+                    // Update the score
                     updateScore();
 
+                    // Stop the laser animation
                     cancelAnimationFrame(laserId);
                 } else {
+                    // Continue moving the laser
                     laserId = requestAnimationFrame(moveLaser);
                 }
             }
         }
 
+        // Decrement the number of shots left
         shots--;
+        // Start moving the laser
         laserId = requestAnimationFrame(moveLaser);
 
+        // Fire the next shot after a short delay
         setTimeout(fireSpecialShot, 50);
     }
 
+    // Start firing special shots
     fireSpecialShot();
 }
 
+// Function to toggle pause state
 function togglePause(e) {
     if (e.key === "Escape" || e.key.toLowerCase() === "p") {
         isPaused = !isPaused;
@@ -410,6 +454,7 @@ function togglePause(e) {
     }
 }
 
+// Add event listeners for shooting and pausing
 document.addEventListener('keydown', (e) => {
     if (e.key === "ArrowUp" && !isShooting) {
         isShooting = true;
@@ -436,6 +481,7 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
+// Function to handle game over
 function gameOver(message, isWin) {
     gameOverMessage.innerHTML = message;
     gameOverOverlay.style.display = "block";
@@ -447,10 +493,12 @@ function gameOver(message, isWin) {
     document.removeEventListener('keydown', specialShoot);
 }
 
+// Function to start invader shooting
 function startInvaderShooting() {
     invaderLaserIntervals.push(setInterval(invaderShoot, 1000 + Math.random() * 2000));
 }
 
+// Function to handle invader shooting
 function invaderShoot() {
     const squares = Array.from(document.querySelectorAll(".grid div"));
     let randomInvaderIndex = alienInvaders[Math.floor(Math.random() * alienInvaders.length)];
@@ -497,6 +545,7 @@ function invaderShoot() {
     }
 }
 
+// Add event listeners for continue and restart buttons
 continueBtn.addEventListener("click", () => {
     isPaused = false;
     pauseOverlay.style.display = "none";
