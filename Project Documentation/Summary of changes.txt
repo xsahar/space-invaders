@@ -37,3 +37,13 @@ The pause state is managed within the requestAnimationFrame loops to ensure that
 
 Canceling and restarting animations:
 cancelAnimationFrame is used to stop animations when necessary, such as when the game is paused or over. Animations are restarted using requestAnimationFrame when the game resumes.
+
+Remove the pause after the game is over cause it used to show even if the game is over and the invaders move if u click on it ("Esc or p)
+
+Implemented is isGameOver to stop the invader from shooting and moving when the game is over
+
+
+shoot and pause freezes laser even after unpausing :
+Laser Movement: Modified the moveLaser and moveLaserDown functions to handle the paused state correctly and ensure they are called again after unpausing.
+Invader Laser Removal: Ensured that the invader laser is properly removed in the moveLaserDown function.
+Pause/Unpause Handling: Modified the togglePause function to resume laser movement after unpausing.

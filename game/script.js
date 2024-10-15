@@ -41,6 +41,8 @@ let lastMoveTime = 0; // Last move time for invaders
 let invaderMoveInterval = 500; // Interval for invader movement
 const minMoveInterval = 100; // Minimum interval for invader movement
 
+let isGameOver = false; // Flag to track if the game is over
+
 // Load the images
 const invaderImg = new Image();
 invaderImg.src = 'images/invader.png';
@@ -132,6 +134,7 @@ StartBtn.addEventListener('click', startGame);
 // Show the overlay and start button initially
 overlay.classList.remove('hidden');
 StartBtn.classList.remove('hidden');
+pauseOverlay.style.display = "none"; 
 
 // Function to create the grid
 function createGrid() {
@@ -164,13 +167,27 @@ function removeInvaders() {
     });
 }
 
-// Function to calculate score in real-time
 function updateScore() {
+    // Get the current time in milliseconds
     const currentTime = new Date().getTime();
+
+    // Calculate the time elapsed since the game started, in seconds
     const timeElapsed = (currentTime - startTime) / 1000;
+
+    // Calculate a time penalty based on the time elapsed
+    // The penalty increases by 5 points for every second that has passed
     const timePenalty = Math.floor(timeElapsed * 5);
+
+    // Calculate the points to be awarded for hitting an invader
+    // The base points are 100, and the time penalty is subtracted from this
+    // The minimum points awarded is 10, even if the time penalty is very high
     const points = 100 - timePenalty;
+
+    // Update the score by adding the calculated points
+    // Ensure that the points added are at least 10
     score += Math.max(points, 10);
+
+    // Update the score display with the new score
     resultDisplay.innerHTML = `Score: ${score}`;
 }
 
@@ -239,6 +256,8 @@ document.addEventListener('keydown', moveShooter);
 
 // Function to move the invaders
 function moveInvaders(timestamp) {
+isGameOver = false; // Reset the game over flag
+
     // If the game is paused, exit the function early
     if (isPaused) return;
 
@@ -305,6 +324,9 @@ animationFrameId = requestAnimationFrame(moveInvaders);
 
 // Function to handle player shooting
 function shoot() {
+
+    if (isGameOver) return; // Do not allow shooting if the game is over
+
     // If the player cannot shoot (due to cooldown), exit the function
     if (!canShoot) return;
 
@@ -320,12 +342,13 @@ function shoot() {
 
     // Function to move the laser
     function moveLaser() {
-        // If the game is paused, exit the function
-        if (isPaused) return;
-
-        // Remove the "laser" class from the current cell
+        if (isPaused || isGameOver) {
+            laserId = requestAnimationFrame(moveLaser); // Continue checking even if paused or game over
+            return;
+        }
+    
+        const squares = Array.from(document.querySelectorAll(".grid div"));
         squares[currentLaserIndex].classList.remove("laser");
-        // Move the laser up by one row
         currentLaserIndex -= width;
 
         // If the laser is still within the grid
@@ -366,6 +389,9 @@ function shoot() {
 
 // Special shooting (Down arrow) with 3 shots and 5-second cooldown
 function specialShoot() {
+
+    if (isGameOver) return; // Do not allow special shooting if the game is over
+
     // Check if special shooting is allowed
     if (!canSpecialShoot) return;
 
@@ -437,6 +463,8 @@ function specialShoot() {
 
 // Function to toggle pause state
 function togglePause(e) {
+    if (isGameOver) return;  // Do not allow pausing if the game is over
+
     if (e.key === "Escape" || e.key.toLowerCase() === "p") {
         isPaused = !isPaused;
 
@@ -450,6 +478,8 @@ function togglePause(e) {
             countdownInterval = setInterval(updateCountdown, 1000);
             animationFrameId = requestAnimationFrame(moveInvaders);
             startInvaderShooting();
+            requestAnimationFrame(moveLaser); // Resume player laser movement
+            requestAnimationFrame(moveLaserDown); // Resume invader laser movement
         }
     }
 }
@@ -483,6 +513,7 @@ document.addEventListener('keyup', (e) => {
 
 // Function to handle game over
 function gameOver(message, isWin) {
+    isGameOver = true; // Set the game over flag to true
     gameOverMessage.innerHTML = message;
     gameOverOverlay.style.display = "block";
     clearInterval(countdownInterval);
@@ -500,6 +531,7 @@ function startInvaderShooting() {
 
 // Function to handle invader shooting
 function invaderShoot() {
+    if (isGameOver) return; //prevent shooting if the game is over
     const squares = Array.from(document.querySelectorAll(".grid div"));
     let randomInvaderIndex = alienInvaders[Math.floor(Math.random() * alienInvaders.length)];
 
@@ -508,7 +540,10 @@ function invaderShoot() {
         let currentLaserIndex = randomInvaderIndex;
 
         function moveLaserDown() {
-            if (isPaused) return;
+            if (isPaused || isGameOver) {
+                laserId = requestAnimationFrame(moveLaserDown); // Continue checking even if paused or game over
+                return;
+            }
         
             const squares = Array.from(document.querySelectorAll(".grid div"));
             if (squares[currentLaserIndex]) {
