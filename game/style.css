@@ -17,6 +17,8 @@ body {
 }
 
 .instructions {
+ /*  */
+  
   font-size: 20px;
   color: rgb(0, 255, 13);
   font-family: 'Times New Roman', Times, serif;
@@ -142,7 +144,7 @@ body {
   height: 100%; /* Full height */
   background: rgba(30, 30, 30, 0.8); /* Darker semi-transparent background */
   z-index: 10; /* Ensure it is on top of game elements */
-  display: flex; /* Use flexbox for centering content */
+  display: block; 
   justify-content: center; /* Center content horizontally */
   align-items: center; /* Center content vertically */
 }
@@ -168,7 +170,7 @@ body {
   border-radius: 10px; /* Rounded corners */
   box-shadow: 0 9px #0a610a; /* Darker shadow effect */
   text-align: center; /* Center text */
-  z-index: 11; /* Ensure it is above the overlay */
+  /* z-index: 18; Ensure it is above the overlay */
   transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 

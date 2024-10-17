@@ -65,12 +65,15 @@ document.body.appendChild(overlay);
 
 // Move the start button inside the overlay
 overlay.appendChild(StartBtn);
+overlay.appendChild(document.querySelector('.title'));
+document.querySelectorAll('.instructions').forEach(function(element) {
+    overlay.appendChild(element);
+});
 
 let lastCountdownTime = 0;
 
 // Countdown loop to update the countdown timer every second
 function countdownLoop(timestamp) {
-
 
     if (!isPaused) {
         if (timestamp - lastCountdownTime >= 1000) {
