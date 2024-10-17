@@ -47,3 +47,7 @@ shoot and pause freezes laser even after unpausing :
 Laser Movement: Modified the moveLaser and moveLaserDown functions to handle the paused state correctly and ensure they are called again after unpausing.
 Invader Laser Removal: Ensured that the invader laser is properly removed in the moveLaserDown function.
 Pause/Unpause Handling: Modified the togglePause function to resume laser movement after unpausing.
+
+Check for Invader Collision with Shooter:
+Add a check in the moveInvaders function to see if any invader has reached the shooter's position.
+If an invader reaches the shooter's position, trigger the game over logic.

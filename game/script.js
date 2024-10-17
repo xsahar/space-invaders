@@ -23,7 +23,7 @@ let isPaused = false; // Pause state
 let playerLives = 3; // Player lives
 let score = 0; // Player score
 let startTime = new Date().getTime(); // Start time of the game
-let totalTime = 45; // Total time for the game
+let totalTime = 100; // Total time for the game
 let remainingTime = totalTime; // Remaining time
 let countdownInterval; // Interval for countdown
 let invaderLaserIntervals = []; // Intervals for invader lasers
@@ -42,6 +42,7 @@ let invaderMoveInterval = 500; // Interval for invader movement
 const minMoveInterval = 100; // Minimum interval for invader movement
 
 let isGameOver = false; // Flag to track if the game is over
+let isGameStarted = false;
 
 // Load the images
 const invaderImg = new Image();
@@ -69,6 +70,8 @@ let lastCountdownTime = 0;
 
 // Countdown loop to update the countdown timer every second
 function countdownLoop(timestamp) {
+
+
     if (!isPaused) {
         if (timestamp - lastCountdownTime >= 1000) {
             updateCountdown();
@@ -101,6 +104,7 @@ requestAnimationFrame(invaderShootLoop);
 
 // Function to start the game
 function startGame() {
+
     // Hide the start button and overlay
     StartBtn.classList.add('hidden');
     overlay.classList.add('hidden');
@@ -129,7 +133,10 @@ function startGame() {
 }
 
 // Add event listener for the "keydown" event to start the game with the "Space" key
-StartBtn.addEventListener('click', startGame);
+StartBtn.addEventListener('click', () => {
+    isGameStarted = true;
+    startGame();
+});
 
 // Show the overlay and start button initially
 overlay.classList.remove('hidden');
@@ -200,6 +207,8 @@ function updateLivesDisplay() {
 
 // Function to update the countdown timer
 function updateCountdown() {
+    if (!isGameStarted) return;
+    if (isGameOver) return;
     if (remainingTime > 0 && !isPaused) {
         remainingTime--;
         countdownDisplay.innerHTML = `Time Left: ${remainingTime}s`;
@@ -254,9 +263,25 @@ function moveShooter(e) {
 // Add event listener for shooter movement
 document.addEventListener('keydown', moveShooter);
 
+
+// Function to check if all invaders are removed and trigger the win condition
+function checkWinCondition() {
+    if (aliensRemoved.length === alienInvaders.length) {
+        gameOver('Congratulations! You have defeated all the invaders!', true);
+        return true; // Return true to stop further game logic
+    }
+    return false; // Return false to continue the game
+}
+
 // Function to move the invaders
 function moveInvaders(timestamp) {
-isGameOver = false; // Reset the game over flag
+
+   
+    if (!isGameStarted || isGameOver) return;
+    
+        // Check if all invaders are removed and stop the game if so
+    if (checkWinCondition()) return;
+    
 
     // If the game is paused, exit the function early
     if (isPaused) return;
@@ -303,6 +328,13 @@ isGameOver = false; // Reset the game over flag
             for (let i = 0; i < alienInvaders.length; i++) {
                 alienInvaders[i] += direction;
             }
+
+           // This checks if any invader has reached the row of the shooter or moved past it
+if (alienInvaders.some(invaderIndex => invaderIndex >= currentShooterIndex && invaderIndex < currentShooterIndex + width)) {
+    gameOver('GAME OVER - An invader reached your position!', false);
+    return;
+}
+
 
             // Draw the invaders in their new positions
             drawInvaders();
@@ -358,10 +390,16 @@ function shoot() {
 
             // Check if the laser hits an invader
             if (squares[currentLaserIndex].style.backgroundImage.includes('invader.png')) {
+                
                 // Get the index of the invader
                 let alienIndex = alienInvaders.indexOf(currentLaserIndex);
                 // Add the invader index to the list of removed invaders
                 aliensRemoved.push(alienIndex);
+
+
+                 // Check if all invaders are removed after this shot
+                if (checkWinCondition()) return;
+
                 // Remove the invader image and the "laser" class from the cell
                 squares[currentLaserIndex].style.backgroundImage = '';
                 squares[currentLaserIndex].classList.remove("laser");
@@ -463,7 +501,10 @@ function specialShoot() {
 
 // Function to toggle pause state
 function togglePause(e) {
-    if (isGameOver) return;  // Do not allow pausing if the game is over
+
+    if (!isGameStarted || isGameOver) {
+        return; // Do not allow pausing if the game hasn't started, is over, or while shooting
+    }
 
     if (e.key === "Escape" || e.key.toLowerCase() === "p") {
         isPaused = !isPaused;
@@ -538,6 +579,12 @@ function invaderShoot() {
     if (!aliensRemoved.includes(alienInvaders.indexOf(randomInvaderIndex))) {
         let laserId;
         let currentLaserIndex = randomInvaderIndex;
+
+              // Check if all invaders are removed and display win message
+        if (alienInvaders.length === 0 || aliensRemoved.length === alienInvaders.length) {
+            gameOver('Congratulations! You have defeated all the invaders!', true);
+            return;
+        }
 
         function moveLaserDown() {
             if (isPaused || isGameOver) {
