@@ -66,7 +66,7 @@ document.body.appendChild(overlay);
 // Move the start button inside the overlay
 overlay.appendChild(StartBtn);
 overlay.appendChild(document.querySelector('.title'));
-document.querySelectorAll('.instructions').forEach(function(element) {
+document.querySelectorAll('.instructions').forEach(function (element) {
     overlay.appendChild(element);
 });
 
@@ -114,10 +114,10 @@ function startGame() {
 
     // Hide the title and instructions
     document.querySelector('.title').classList.add('hidden');
-    document.querySelectorAll('.instructions').forEach(function(element) {
+    document.querySelectorAll('.instructions').forEach(function (element) {
         element.classList.add('hidden');
     });
-    
+
     // Show the game elements
     resultDisplay.classList.remove('hidden');
     countdownDisplay.classList.remove('hidden');
@@ -144,7 +144,7 @@ StartBtn.addEventListener('click', () => {
 // Show the overlay and start button initially
 overlay.classList.remove('hidden');
 StartBtn.classList.remove('hidden');
-pauseOverlay.style.display = "none"; 
+pauseOverlay.style.display = "none";
 
 // Function to create the grid
 function createGrid() {
@@ -279,19 +279,19 @@ function checkWinCondition() {
 // Function to move the invaders
 function moveInvaders(timestamp) {
 
-   
+
     if (!isGameStarted || isGameOver) return;
-    
-        // Check if all invaders are removed and stop the game if so
+
+    // Check if all invaders are removed and stop the game if so
     if (checkWinCondition()) return;
-    
+
 
     // If the game is paused, exit the function early
     if (isPaused) return;
 
     // Get all the squares in the grid
     const squares = Array.from(document.querySelectorAll(".grid div"));
-    
+
     // Calculate the time elapsed since the last frame
     const elapsed = timestamp - lastTimestamp;
 
@@ -299,13 +299,13 @@ function moveInvaders(timestamp) {
     if (elapsed > frameDuration) {
         // Calculate the time since the last invader move
         const timeSinceLastMove = timestamp - lastMoveTime;
-        
+
         // Check if enough time has passed to move the invaders
         if (timeSinceLastMove > invaderMoveInterval) {
             // Check if the invaders are at the left or right edge of the grid
             const leftEdge = alienInvaders[0] % width === 0;
             const rightEdge = alienInvaders[alienInvaders.length - 1] % width === width - 1;
-            
+
             // Remove the current invaders from the grid
             removeInvaders();
 
@@ -332,11 +332,11 @@ function moveInvaders(timestamp) {
                 alienInvaders[i] += direction;
             }
 
-           // This checks if any invader has reached the row of the shooter or moved past it
-if (alienInvaders.some(invaderIndex => invaderIndex >= currentShooterIndex && invaderIndex < currentShooterIndex + width)) {
-    gameOver('GAME OVER - An invader reached your position!', false);
-    return;
-}
+            // This checks if any invader has reached the row of the shooter or moved past it
+            if (alienInvaders.some(invaderIndex => invaderIndex >= currentShooterIndex && invaderIndex < currentShooterIndex + width)) {
+                gameOver('GAME OVER - An invader reached your position!', false);
+                return;
+            }
 
 
             // Draw the invaders in their new positions
@@ -381,7 +381,7 @@ function shoot() {
             laserId = requestAnimationFrame(moveLaser); // Continue checking even if paused or game over
             return;
         }
-    
+
         const squares = Array.from(document.querySelectorAll(".grid div"));
         squares[currentLaserIndex].classList.remove("laser");
         currentLaserIndex -= width;
@@ -393,14 +393,14 @@ function shoot() {
 
             // Check if the laser hits an invader
             if (squares[currentLaserIndex].style.backgroundImage.includes('invader.png')) {
-                
+
                 // Get the index of the invader
                 let alienIndex = alienInvaders.indexOf(currentLaserIndex);
                 // Add the invader index to the list of removed invaders
                 aliensRemoved.push(alienIndex);
 
 
-                 // Check if all invaders are removed after this shot
+                // Check if all invaders are removed after this shot
                 if (checkWinCondition()) return;
 
                 // Remove the invader image and the "laser" class from the cell
@@ -519,7 +519,7 @@ function togglePause(e) {
             invaderLaserIntervals.forEach(interval => clearInterval(interval));
         } else {
             pauseOverlay.style.display = "none";
-            countdownInterval = setInterval(updateCountdown, 1000);
+            countdownInterval = requestAnimationFrame(countdownLoop);
             animationFrameId = requestAnimationFrame(moveInvaders);
             startInvaderShooting();
             requestAnimationFrame(moveLaser); // Resume player laser movement
@@ -583,7 +583,7 @@ function invaderShoot() {
         let laserId;
         let currentLaserIndex = randomInvaderIndex;
 
-              // Check if all invaders are removed and display win message
+        // Check if all invaders are removed and display win message
         if (alienInvaders.length === 0 || aliensRemoved.length === alienInvaders.length) {
             gameOver('Congratulations! You have defeated all the invaders!', true);
             return;
@@ -594,26 +594,26 @@ function invaderShoot() {
                 laserId = requestAnimationFrame(moveLaserDown); // Continue checking even if paused or game over
                 return;
             }
-        
+
             const squares = Array.from(document.querySelectorAll(".grid div"));
             if (squares[currentLaserIndex]) {
                 squares[currentLaserIndex].classList.remove("invader-laser");
             }
             currentLaserIndex += width;
-        
+
             if (currentLaserIndex < width * width) {
                 if (squares[currentLaserIndex]) {
                     squares[currentLaserIndex].classList.add("invader-laser");
-        
+
                     if (currentLaserIndex === currentShooterIndex) {
                         squares[currentLaserIndex].classList.remove("invader-laser");
                         playerLives--;
                         updateLivesDisplay();
-        
+
                         if (playerLives === 0) {
                             gameOver('GAME OVER - You were hit 3 times!', false);
                         }
-        
+
                         cancelAnimationFrame(laserId);
                     } else {
                         laserId = requestAnimationFrame(moveLaserDown);

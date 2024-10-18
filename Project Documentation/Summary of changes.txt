@@ -1,5 +1,11 @@
 Summary of Changes:
 
+Latest changes:
+Timmer speeding up after pausing mutliple times
+replaced countdownInterval = setInterval(updateCountdown, 1000);
+ To: 
+ countdownInterval = requestAnimationFrame(countdownLoop);, because the setIntervals where rmoved and replaced with countdownLoop
+
 Removed Unused Variables: results and speed.
 Removed Unnecessary Image Loading Block: Promise.all block.
 
